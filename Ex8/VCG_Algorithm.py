@@ -75,10 +75,7 @@ def VCG_Algorithm(agents: List[Agent]):
     :param agents:
     :return:
     """
-    G = nx.Graph()
-    for i in agents:
-        for j in i.options.keys():
-            G.add_edge(i.name, j, weight=i.value(j))
+    G = build_bilateral_graph(agents)
 
     maximum, max_weight_matching_with_player = max_weight_matching_algorithm(G)
     print("max_option:", "=", maximum)
@@ -115,6 +112,14 @@ def get_value_player(G, max_weight_matching, option):
 
     return value
 
+
+def build_bilateral_graph(agents: List[Agent]):
+    G = nx.Graph()
+    for i in agents:
+        for j in i.options.keys():
+            G.add_edge(i.name, j, weight=i.value(j))
+
+    return G
 
 if __name__ == '__main__':
     import doctest
