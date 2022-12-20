@@ -1,7 +1,7 @@
 from typing import List
 import doctest
 import networkx as nx
-
+import matplotlib.pyplot as plt
 from typing import Dict
 
 
@@ -17,12 +17,6 @@ class Agent:
         if self.options.get(option) is None:  # option doesn't exist
             return -1
         return self.options[option]
-
-    def sum(self):
-        sum = 0
-        for i in self.options.keys():
-            sum += self.value(i)
-        return sum
 
 
 def VCG_Algorithm(agents: List[Agent]):
@@ -72,25 +66,60 @@ def VCG_Algorithm(agents: List[Agent]):
     Rami pay:  16 - 16 = 0
 
 
+    >>> AmiAgent2 = Agent('Ami')
+    >>> AmiAgent2.set_option('item1', 1)
+    >>> AmiAgent2.set_option('item2', 2)
+    >>> AmiAgent2.set_option('item3', 3)
+    >>> AmiAgent2.set_option('item4', 4)
+    >>> AmiAgent2.set_option('item5', 11)
+
+    >>> TamiAgent2 = Agent('Tami')
+    >>> TamiAgent2.set_option('item1', 1)
+    >>> TamiAgent2.set_option('item2', 2)
+    >>> TamiAgent2.set_option('item3', 3)
+    >>> TamiAgent2.set_option('item4', 4)
+    >>> TamiAgent2.set_option('item5', 8)
+
+    >>> RamiAgent2 = Agent('Rami')
+    >>> RamiAgent2.set_option('item1', 1)
+    >>> RamiAgent2.set_option('item2', 2)
+    >>> RamiAgent2.set_option('item3', 3)
+    >>> RamiAgent2.set_option('item4', 4)
+    >>> RamiAgent2.set_option('item5', 9)
+
+
+
+    >>> g = [AmiAgent2, TamiAgent2, RamiAgent2]
+
+    >>> VCG_Algorithm(g)
+    max_option: = 18
+    max without:  Ami : 13
+    Ami pay:  13 - 7 = 6
+    max without:  Tami : 15
+    Tami pay:  15 - 15 = 0
+    max without:  Rami : 15
+    Rami pay:  15 - 14 = 1
+
     :param agents:
     :return:
     """
-    G = build_bilateral_graph(agents)
-
+    G = build_bilateral_graph(agents)  # create bilateral_graph
     maximum, max_weight_matching_with_player = max_weight_matching_algorithm(G)
     print("max_option:", "=", maximum)
     # print(max_weight_matching_with_player)
-    G1 = G.copy()
-    for i in agents:
-        G1.remove_node(i.name)
-        max_without_player, w = max_weight_matching_algorithm(G1)
-        print("max without: ", i.name, ":", max_without_player)
+    G1 = G.copy()  # copy graph
+    for agent in agents:
+        G1.remove_node(agent.name)  # remove node (and his edges)
+        max_without_player, w = max_weight_matching_algorithm(
+            G1)  # finding the placement that maximizes the sum of values
+        print("max without: ", agent.name, ":", max_without_player)
         # print(w)
-        max_option = maximum - get_value_player(G, max_weight_matching_with_player, i.name)
-        print(i.name, "pay: ", max_without_player, "-", max_option, "=",
-              max_without_player - (maximum - get_value_player(G, max_weight_matching_with_player, i.name)))
+        max_option = maximum - get_value_player(G, max_weight_matching_with_player,
+                                                agent.name)  # the maximum with the player - his value
+        print(agent.name, "pay: ", max_without_player, "-", max_option, "=",
+              max_without_player - (maximum - get_value_player(G, max_weight_matching_with_player, agent.name)))
         # print("Maximum-value matching: ", nx.max_weight_matching(G1))
-        G1 = G.copy()
+        G1 = G.copy()  # back node (and his edges)
 
 
 def max_weight_matching_algorithm(G):
@@ -121,7 +150,33 @@ def build_bilateral_graph(agents: List[Agent]):
 
     return G
 
+
+def draw_graph(G, pos):
+    plt.figure()
+
+    nx.draw(G, pos)
+    labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+
+    plt.show()
+
+
 if __name__ == '__main__':
     import doctest
 
     doctest.testmod()
+
+    """
+    AmiAgent3 = Agent('Ami')
+    AmiAgent3.set_option('item1', 8)
+    AmiAgent3.set_option('item2', 4)
+
+    TamiAgent3 = Agent('Tami')
+    TamiAgent3.set_option('item1', 5)
+    TamiAgent3.set_option('item2', 8)
+
+    e = [AmiAgent3, TamiAgent3]
+    pos = {'Ami': (0, 0), 'Tami': (0, 0.3), 'item1': (3, 0.0), 'item2': (3, 0.8)}
+    G = build_bilateral_graph(e)
+    draw_graph(G,pos)
+    """
