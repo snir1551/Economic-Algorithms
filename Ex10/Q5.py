@@ -7,48 +7,28 @@ from itertools import combinations
 
 
 def compute_budget(total_budget: float, citizen_votes: List[List]) -> List[float]:
-    """
-    >>> citizen_votes1 = [[30, 0, 0], [0, 15, 15], [0, 15, 15]]
-    >>> const_votes1 = [6, 12]
-    >>> total_budget1 = 30
-    >>> binary_search(citizen_votes1,0,1,total_budget1,0,True)
-    const_votes =  [5.999999999999659, 11.999999999999318]
-    all medians =  [5.999999999999659, 11.999999999999318, 11.999999999999318]
-    0.2
 
-    >>> citizen_votes2 = [[6, 0, 6], [6, 0, 6], [6, 6, 0], [6,6,0],[0,6,6],[0,6,6], [6,0,0], [0,6,0], [0,0,6]]
-    >>> const_votes2 = [2,4]
-    >>> total_budget2 = 30
-    >>> binary_search(citizen_votes2,0,1,total_budget2,0,True)
-    const_votes =  [0.714285714285765, 1.42857142857153, 2.142857142857295, 2.85714285714306, 3.571428571428825, 4.28571428571459, 5.000000000000355, 5.71428571428612]
-    all medians =  [3.571428571428825, 3.571428571428825, 3.571428571428825, 3.571428571428825, 3.571428571428825, 3.571428571428825, 2.85714285714306, 2.85714285714306, 2.85714285714306]
-    0.02380952381
-
-    :param total_budget:
-    :param citizen_votes:
-    :return:
-    """
     return binary_search(citizen_votes, 0, 1, total_budget, 0, True)
 
 
 def c_votes(cizizen_votes_size: int, t: float, c: float):
     """
-    >>> cizizen_votes_size1 = 3
-    >>> t1 = 1/15
-    >>> c1 = 30
-    >>> c_votes(cizizen_votes_size1, t1, c1)
-    [2.0, 4.0]
+        >>> cizizen_votes_size1 = 3
+        >>> t1 = 1/15
+        >>> c1 = 30
+        >>> c_votes(cizizen_votes_size1, t1, c1)
+        [2.0, 4.0]
 
-    >>> cizizen_votes_size2 = 3
-    >>> t2 = 0.2
-    >>> c2 = 30
-    >>> c_votes(cizizen_votes_size2, t2, c2)
-    [6.0, 12.0]
+        >>> cizizen_votes_size2 = 3
+        >>> t2 = 0.2
+        >>> c2 = 30
+        >>> c_votes(cizizen_votes_size2, t2, c2)
+        [6.0, 12.0]
 
-    :param cizizen_votes_size:
-    :param t:
-    :param c:
-    :return:
+        :param cizizen_votes_size:
+        :param t:
+        :param c:
+        :return:
     """
 
     const_votes = []
@@ -71,15 +51,20 @@ def find_medians(citizen_votes: List[List], const_votes: list):
     >>> find_medians(citizen_votes1, const_votes1)
     [6, 12, 12]
 
-    >>> citizen_votes1 = [[30, 0, 0], [0, 15, 15], [0, 15, 15]]
-    >>> const_votes1 = [5.625, 11.25]
-    >>> find_medians(citizen_votes1, const_votes1)
+    >>> citizen_votes2 = [[30, 0, 0], [0, 15, 15], [0, 15, 15]]
+    >>> const_votes2 = [5.625, 11.25]
+    >>> find_medians(citizen_votes2, const_votes2)
     [5.625, 11.25, 11.25]
 
-    >>> citizen_votes2 = [[6, 0, 6], [6, 0, 6], [6, 6, 0], [6,6,0],[0,6,6],[0,6,6], [6,0,0], [0,6,0], [0,0,6]]
-    >>> const_votes2 = [2,4]
-    >>> find_medians(citizen_votes2, const_votes2)
+    >>> citizen_votes3 = [[6, 0, 6], [6, 0, 6], [6, 6, 0], [6,6,0],[0,6,6],[0,6,6], [6,0,0], [0,6,0], [0,0,6]]
+    >>> const_votes3 = [2,4]
+    >>> find_medians(citizen_votes3, const_votes3)
     [4, 4, 4, 4, 4, 4, 2, 2, 2]
+
+    >>> citizen_votes4 = [[30, 0, 0,2], [0, 15, 15,2], [0, 15, 15,2]]
+    >>> const_votes4 = [6, 12]
+    >>> find_medians(citizen_votes4, const_votes4)
+    [4.0, 9.0, 9.0]
 
     :param citizen_votes:
     :param const_votes:
@@ -93,36 +78,42 @@ def find_medians(citizen_votes: List[List], const_votes: list):
     sorted_citizen_votes = sort_citizen_votes(sorted_citizen_votes)
     medians = []
     for i in sorted_citizen_votes:
-        medians.append(i[math.ceil((len(i) - 1) / 2)])
-
+        if len(i) % 2 == 0:
+            medians.append((i[(len(i)-1) // 2] + i[(len(i) // 2)]) / 2)
+            #print((i[(len(i)-1) // 2]))
+            #print(i[(len(i) // 2)])
+        else:
+            #print(i[(len(i)-1) // 2])
+            medians.append(i[(len(i)-1) // 2])
 
     return medians
 
 
 def sum_medians(medians: List):
     """
-    >>> medians1 = [6,12,12]
-    >>> sum_medians(medians1)
-    30
+        >>> medians1 = [6,12,12]
+        >>> sum_medians(medians1)
+        30
 
-    >>> medians2 = [4,4,4,4,4,4,2,2,2]
-    >>> sum_medians(medians2)
-    30
+        >>> medians2 = [4,4,4,4,4,4,2,2,2]
+        >>> sum_medians(medians2)
+        30
 
-    :param medians:
-    :return:
+        :param medians:
+        :return:
     """
     return sum(medians)
 
 
 def sort_citizen_votes(citizen_votes: List[List]):
     """
-    >>> citizen_votes1 = [[30,15,2,0,40], [1,3,7,0,90], [5,4,3,2,1]]
-    >>> sort_citizen_votes(citizen_votes1)
-    [[0, 2, 15, 30, 40], [0, 1, 3, 7, 90], [1, 2, 3, 4, 5]]
+        >>> citizen_votes1 = [[30,15,2,0,40], [1,3,7,0,90], [5,4,3,2,1]]
+        >>> sort_citizen_votes(citizen_votes1)
+        [[0, 2, 15, 30, 40], [0, 1, 3, 7, 90], [1, 2, 3, 4, 5]]
 
-    :param citizen_votes:
-    :return:
+
+        :param citizen_votes:
+        :return:
     """
     ans = []
     sorted_citizen_votes = citizen_votes.copy()
@@ -133,25 +124,24 @@ def sort_citizen_votes(citizen_votes: List[List]):
 
 def binary_search(citizen_votes: List[List], low, high, total_budget: float, i, print_all):
     """
-    >>> citizen_votes1 = [[30, 0, 0], [0, 15, 15], [0, 15, 15]]
-    >>> const_votes1 = [6, 12]
-    >>> total_budget1 = 30
-    >>> binary_search(citizen_votes1,0,1,total_budget1,0,False)
-    0.2
+        >>> citizen_votes1 = [[30, 0, 0], [0, 15, 15], [0, 15, 15]]
+        >>> const_votes1 = [6, 12]
+        >>> total_budget1 = 30
+        >>> binary_search(citizen_votes1,0,1,total_budget1,0,False)
+        0.2
+        >>> citizen_votes2 = [[6, 0, 6], [6, 0, 6], [6, 6, 0], [6,6,0],[0,6,6],[0,6,6], [6,0,0], [0,6,0], [0,0,6]]
+        >>> const_votes2 = [2,4]
+        >>> total_budget2 = 30
+        >>> binary_search(citizen_votes2,0,1,total_budget2,0,False)
+        0.02380952381
 
-    >>> citizen_votes2 = [[6, 0, 6], [6, 0, 6], [6, 6, 0], [6,6,0],[0,6,6],[0,6,6], [6,0,0], [0,6,0], [0,0,6]]
-    >>> const_votes2 = [2,4]
-    >>> total_budget2 = 30
-    >>> binary_search(citizen_votes2,0,1,total_budget2,0,False)
-    0.02380952381
-
-    :param citizen_votes:
-    :param low:
-    :param high:
-    :param total_budget:
-    :param i:
-    :return:
-    """
+        :param citizen_votes:
+        :param low:
+        :param high:
+        :param total_budget:
+        :param i:
+        :return:
+        """
     if high >= low:
         # print("citizen votes = ", citizen_votes)
         mid = (high + low) / 2
@@ -201,15 +191,15 @@ def binary_search(citizen_votes: List[List], low, high, total_budget: float, i, 
 
 def check_fairness_group(total_budget: float, citizen_votes: List[List]):
     """
-    >>> citizen_votes1 = [[0, 0, 0,0,0,0,0,0,0,0], [0, 0, 0,0,0,0,0,0,0,0], [0, 0, 0,0,0,0,0,0,0,0]]
-    >>> total_budget1 = 30
-    >>> check_fairness_group(total_budget1,citizen_votes1)
-    False
+        >>> citizen_votes1 = [[0, 0, 0,0,0,0,0,0,0,0], [0, 0, 0,0,0,0,0,0,0,0], [0, 0, 0,0,0,0,0,0,0,0]]
+        >>> total_budget1 = 30
+        >>> check_fairness_group(total_budget1,citizen_votes1)
+        False
 
-    :param total_budget:
-    :param citizen_votes:
-    :return:
-    """
+        :param total_budget:
+        :param citizen_votes:
+        :return:
+        """
     num_citizens = len(citizen_votes[0])
     num_subjects = len(citizen_votes)
     d = []
@@ -255,9 +245,12 @@ def check_fairness_group(total_budget: float, citizen_votes: List[List]):
                                             # print("d = ", d)
                                             if sum_medians(all_medians) != total_budget:
                                                 print(d)
-                                                print(all_medians)
-                                                print(sum_medians(all_medians))
+                                                print("const_votes = ", const_votes)
+                                                print("all_medians = ", all_medians)
+                                                print("sum_of_medians = ", sum_medians(all_medians))
                                                 return False
+                                            else:
+                                                print(1)
                                             w -= 1
 
                                             d[i10][9] = 0
@@ -286,14 +279,20 @@ def check_fairness_group(total_budget: float, citizen_votes: List[List]):
 
 if __name__ == '__main__':
     doctest.testmod()
-    a = [[30, 0, 0], [0, 15, 15], [0, 15, 15]]
+    a = [[30, 2, 7,1,1], [0, 15, 15], [0, 15, 15]]
+    print(len(a[0]))
+    if len(a[0]) %2 == 0:
+        print("Yesss")
+    else:
+        print("nooo")
+    print("sum = ", (a[0][(len(a)-1) // 2]))
     # print(a)
     b = find_medians(a, [2, 4])
     # print(b)
 
     # print(binary_search(a, 0, 1, 30,3,False))
     c = [[6, 0, 6], [6, 0, 6], [6, 6, 0], [6, 6, 0], [0, 6, 6], [0, 6, 6], [6, 0, 0], [0, 6, 0], [0, 0, 6]]
-    c1 = [[0, 0, 0,0,0,0,0,0,0,0], [0, 0, 0,0,0,0,0,0,0,0], [0, 0, 0,0,0,0,0,0,0,0]]
+    c1 = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
     # print("before")
     # print(binary_search(c, 0, 1, 30,3))
     print(check_fairness_group(30, c1))
