@@ -25,6 +25,18 @@ def c_votes(cizizen_votes_size: int, t: float, c: float):
         >>> c_votes(cizizen_votes_size2, t2, c2)
         [6.0, 12.0]
 
+        >>> cizizen_votes_size1 = 4
+        >>> t1 = 1/15
+        >>> c1 = 30
+        >>> c_votes(cizizen_votes_size1, t1, c1)
+        [2.0, 4.0, 6.0]
+
+        >>> cizizen_votes_size1 = 5
+        >>> t1 = 1/15
+        >>> c1 = 30
+        >>> c_votes(cizizen_votes_size1, t1, c1)
+        [2.0, 4.0, 6.0, 8.0]
+
         :param cizizen_votes_size:
         :param t:
         :param c:
@@ -292,7 +304,7 @@ def check_fairness_group(total_budget: float, citizen_votes: List[List]) -> bool
                 # print("in z = ", d)
             d[i2][1] = 0
         d[i1][0] = 0
-        
+
     return True
 
 
