@@ -138,7 +138,7 @@ def binary_search(citizen_votes: List[List], low, high, total_budget: float, i, 
         >>> const_votes2 = [2,4]
         >>> total_budget2 = 30
         >>> binary_search(citizen_votes2,0,1,total_budget2,0,False)
-        [0.02380952381, [0.714285714285765, 1.42857142857153, 2.142857142857295, 2.85714285714306, 3.571428571428825, 4.28571428571459, 5.000000000000355, 5.71428571428612], [3.571428571428825, 3.571428571428825, 3.571428571428825, 3.571428571428825, 3.571428571428825, 3.571428571428825, 2.85714285714306, 2.85714285714306, 2.85714285714306], 30.0]
+        [0.06666666667, [1.9999999999998863, 3.9999999999997726], [3.9999999999997726, 3.9999999999997726, 3.9999999999997726, 3.9999999999997726, 3.9999999999997726, 3.9999999999997726, 1.9999999999998863, 1.9999999999998863, 1.9999999999998863], 30.0]
 
         :param citizen_votes:
         :param low:
@@ -150,7 +150,7 @@ def binary_search(citizen_votes: List[List], low, high, total_budget: float, i, 
     if high >= low:
         # print("citizen votes = ", citizen_votes)
         mid = (high + low) / 2
-        const_votes = c_votes(len(citizen_votes), mid, total_budget)
+        const_votes = c_votes(len(citizen_votes[0]), mid, total_budget)
         all_medians = find_medians(citizen_votes, const_votes)
         c = sum_medians(all_medians)
         # answer = round(c, 11)
@@ -211,16 +211,12 @@ def binary_search(citizen_votes: List[List], low, high, total_budget: float, i, 
         return -1
 
 
-def check_fairness_group(total_budget: float, citizen_votes: List[List]):
+def check_fairness_group(total_budget: float, citizen_votes: List[List]) -> bool:
     """
         >>> citizen_votes1 = [[0, 0, 0,0,0,0,0,0,0,0], [0, 0, 0,0,0,0,0,0,0,0], [0, 0, 0,0,0,0,0,0,0,0]]
         >>> total_budget1 = 30
         >>> check_fairness_group(total_budget1,citizen_votes1)
-        [[30, 30, 30, 30, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 30, 30, 30, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 30, 30, 30]]
-        t =  1.0
-        const_votes =  [30, 30]
-        all_medians =  [15.0, 0.0, 0.0]
-        c =  15.0
+        True
 
 
         :param total_budget:
@@ -272,17 +268,18 @@ def check_fairness_group(total_budget: float, citizen_votes: List[List]):
                                                 print("const_votes = ", result[1])
                                                 print("all_medians = ", result[2])
                                                 print("c = ", result[3])
+                                                return False
                                             #const_votes = c_votes(len(d), fair, total_budget)
                                             #all_medians = find_medians(d, const_votes)
                                             # print("const_votes = ", const_votes)
                                             # print("all_medians = ", all_medians)
                                             # print("d = ", d)
                                             #
-                                            if w == 1:
-                                                pass
-                                            if w <= 0:
-                                                return
-                                            w -= 1
+                                            # if w == 1:
+                                            #     pass
+                                            # if w <= 0:
+                                            #     return
+                                            # w -= 1
 
                                             d[i10][9] = 0
                                         d[i9][8] = 0
@@ -295,6 +292,7 @@ def check_fairness_group(total_budget: float, citizen_votes: List[List]):
                 # print("in z = ", d)
             d[i2][1] = 0
         d[i1][0] = 0
+        
     return True
 
 
