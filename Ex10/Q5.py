@@ -7,8 +7,8 @@ from itertools import combinations
 
 
 def compute_budget(total_budget: float, citizen_votes: List[List]) -> List[float]:
-
-    return binary_search(citizen_votes, 0, 1, total_budget, 0, True)
+    c_b = binary_search(citizen_votes, 0, 1, total_budget, 1, False)
+    return c_b
 
 
 def c_votes(cizizen_votes_size: int, t: float, c: float):
@@ -65,6 +65,11 @@ def find_medians(citizen_votes: List[List], const_votes: list):
     >>> const_votes4 = [6, 12]
     >>> find_medians(citizen_votes4, const_votes4)
     [4.0, 9.0, 9.0]
+
+    >>> citizen_votes4 = [[30, 30,30,30,0,0,0,0,0,0], [0, 0,0,0,30,30,30,0,0,0], [0,0,0,0,0,0,0,30,30,30]]
+    >>> const_votes4 = [15.0, 30]
+    >>> find_medians(citizen_votes4, const_votes4)
+    [7.5, 0.0, 0.0]
 
     :param citizen_votes:
     :param const_votes:
@@ -128,12 +133,12 @@ def binary_search(citizen_votes: List[List], low, high, total_budget: float, i, 
         >>> const_votes1 = [6, 12]
         >>> total_budget1 = 30
         >>> binary_search(citizen_votes1,0,1,total_budget1,0,False)
-        0.2
+        [0.2, [5.999999999999659, 11.999999999999318], [5.999999999999659, 11.999999999999318, 11.999999999999318], 30.0]
         >>> citizen_votes2 = [[6, 0, 6], [6, 0, 6], [6, 6, 0], [6,6,0],[0,6,6],[0,6,6], [6,0,0], [0,6,0], [0,0,6]]
         >>> const_votes2 = [2,4]
         >>> total_budget2 = 30
         >>> binary_search(citizen_votes2,0,1,total_budget2,0,False)
-        0.02380952381
+        [0.02380952381, [0.714285714285765, 1.42857142857153, 2.142857142857295, 2.85714285714306, 3.571428571428825, 4.28571428571459, 5.000000000000355, 5.71428571428612], [3.571428571428825, 3.571428571428825, 3.571428571428825, 3.571428571428825, 3.571428571428825, 3.571428571428825, 2.85714285714306, 2.85714285714306, 2.85714285714306], 30.0]
 
         :param citizen_votes:
         :param low:
@@ -150,7 +155,24 @@ def binary_search(citizen_votes: List[List], low, high, total_budget: float, i, 
         c = sum_medians(all_medians)
         # answer = round(c, 11)
         # print("answer = ", answer)
-
+        if mid == 0 or mid == 1:
+            return [round(mid, 11), const_votes, all_medians, round(c, 11)]
+        if i > -500:
+            i-=1
+        if i == -6:
+            pass
+        # if i > 0:
+        #     const_votes = c_votes(len(citizen_votes), 0, total_budget)
+        #     all_medians = find_medians(citizen_votes, const_votes)
+        #     c = sum_medians(all_medians)
+        #     if c == total_budget:
+        #         return [0,const_votes,all_medians,round(c, 11)]
+        #     const_votes = c_votes(len(citizen_votes), 1, total_budget)
+        #     all_medians = find_medians(citizen_votes, const_votes)
+        #     c = sum_medians(all_medians)
+        #     if c == total_budget:
+        #         return [1,const_votes,all_medians,round(c, 11)]
+        #     i -= 1
         # if i==0:
         #     return mid
 
@@ -161,7 +183,7 @@ def binary_search(citizen_votes: List[List], low, high, total_budget: float, i, 
             if print_all:
                 print("const_votes = ", const_votes)
                 print("all medians = ", all_medians)
-            return round(mid, 11)
+            return [round(mid, 11),const_votes,all_medians,round(c, 11)]
 
         elif c > total_budget:
             # print("mid = ", mid)
@@ -194,7 +216,12 @@ def check_fairness_group(total_budget: float, citizen_votes: List[List]):
         >>> citizen_votes1 = [[0, 0, 0,0,0,0,0,0,0,0], [0, 0, 0,0,0,0,0,0,0,0], [0, 0, 0,0,0,0,0,0,0,0]]
         >>> total_budget1 = 30
         >>> check_fairness_group(total_budget1,citizen_votes1)
-        False
+        [[30, 30, 30, 30, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 30, 30, 30, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 30, 30, 30]]
+        t =  1.0
+        const_votes =  [30, 30]
+        all_medians =  [15.0, 0.0, 0.0]
+        c =  15.0
+
 
         :param total_budget:
         :param citizen_votes:
@@ -204,7 +231,7 @@ def check_fairness_group(total_budget: float, citizen_votes: List[List]):
     num_subjects = len(citizen_votes)
     d = []
     fair = 1 / num_citizens
-    w = 30
+    w = 377
     for i in citizen_votes:
         d.append(i.copy())
     for i1 in range(num_subjects):
@@ -238,19 +265,23 @@ def check_fairness_group(total_budget: float, citizen_votes: List[List]):
 
                                         for i10 in range(num_subjects):
                                             d[i10][9] = total_budget
-                                            const_votes = c_votes(len(d), fair, total_budget)
-                                            all_medians = find_medians(d, const_votes)
+                                            result = compute_budget(total_budget,d)
+                                            if result[3] != total_budget:
+                                                print(d)
+                                                print("t = ",result[0])
+                                                print("const_votes = ", result[1])
+                                                print("all_medians = ", result[2])
+                                                print("c = ", result[3])
+                                            #const_votes = c_votes(len(d), fair, total_budget)
+                                            #all_medians = find_medians(d, const_votes)
                                             # print("const_votes = ", const_votes)
                                             # print("all_medians = ", all_medians)
                                             # print("d = ", d)
-                                            if sum_medians(all_medians) != total_budget:
-                                                print(d)
-                                                print("const_votes = ", const_votes)
-                                                print("all_medians = ", all_medians)
-                                                print("sum_of_medians = ", sum_medians(all_medians))
-                                                return False
-                                            else:
-                                                print(1)
+                                            #
+                                            if w == 1:
+                                                pass
+                                            if w <= 0:
+                                                return
                                             w -= 1
 
                                             d[i10][9] = 0
