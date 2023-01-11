@@ -1,4 +1,4 @@
-# Economic-Algorithms-Ex8
+# Economic-Algorithms-Ex2
 
-![image](https://user-images.githubusercontent.com/58264273/211701526-af764b07-cb88-48df-95b0-cc488b9aabbb.png)
+![image](https://user-images.githubusercontent.com/58264273/211705229-b3f00354-ed9c-49f4-9d80-ae55ddc8003b.png)
 
