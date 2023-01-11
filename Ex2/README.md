@@ -1,3 +1,3 @@
 # Economic-Algorithms-Ex2
 
-![image](https://user-images.githubusercontent.com/58264273/206283163-ffb60a82-4941-4b8d-9708-74dc0af87e6c.png)
+![image](https://user-images.githubusercontent.com/58264273/211707878-4956ee5c-dd77-4da0-82de-6ec566ddb178.png)
