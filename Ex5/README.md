@@ -1,7 +1,8 @@
 # Economic-Algorithms-Ex5
 
-![image](https://user-images.githubusercontent.com/58264273/211707400-ace17e76-9358-4760-942d-f968a934bfac.png)
+![image](https://user-images.githubusercontent.com/58264273/211708266-3e7e0327-dccc-411a-ba0a-ea77ea1c9532.png)
 
-![image](https://user-images.githubusercontent.com/58264273/211707479-bcec94cd-0ec5-4ea2-bb98-ba3af95c679f.png)
+![image](https://user-images.githubusercontent.com/58264273/211708313-d50cfd77-33ff-452f-905c-819b57adfa5c.png)
+
 
 
