@@ -1,7 +1,4 @@
 import doctest
-from typing import List, Dict
-from collections import defaultdict
-import networkx as nx
 from typing import List
 from collections import deque
 import matplotlib.pyplot as plt
@@ -38,7 +35,8 @@ def find_trading_cycle(preferences: List[List[int]]):
     >>> find_trading_cycle(preferences)
     [1, 2, 1]
 
-    
+    :param preferences:
+    :return:
     """
     # Get the number of citizens
     n = len(preferences)
@@ -69,6 +67,14 @@ def find_trading_cycle(preferences: List[List[int]]):
 
 def trading_circles_algorithm(preferences: List[List[int]]):
     """
+    Finds all trading cycles in a given list of preferences.
+    A trading cycle is a sequence of citizens and homes such that each citizen is matched to their
+    most preferred home, and each home is matched to its most preferred citizen.
+
+    :param preferences: A list of lists, where each list represents the preferences of a citizen.
+                      The first element of each list is the most preferred home, the second is the
+                      second most preferred, and so on.
+    :return: A list of strings, each string representing a trading cycle.
 
     >>> preferences = [[1, 2, 0], [2, 1, 0], [1, 2, 0]]
     >>> trading_circles_algorithm(preferences)
@@ -141,55 +147,15 @@ def test_visualize_matchings():
     matchings = ['citizen1 -> home2, citizen2 -> home1', 'citizen0 -> home0']
     visualize_matchings(matchings)
     assert True
+    matchings = trading_circles_algorithm([[2, 1, 0], [2, 1, 0], [2, 1, 0]])
+    visualize_matchings(matchings)
+    assert True
     matchings = trading_circles_algorithm([[3, 7, 1, 5, 6, 4, 2, 0], [1, 0, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1, 0], [1, 2, 3, 4, 5, 6, 7, 0], [3, 2, 1, 0, 4, 5, 6, 7], [6, 5, 4, 3, 2, 1, 0, 7], [4, 3, 2, 1, 0, 5, 6, 7], [5, 4, 3, 2, 1, 0, 7, 6]])
     visualize_matchings(matchings)
     assert True
 
 
 
-# def find_trading_cycle(preferences: List[List[int]]):
-#     """
-#         >>> preferences = [[1, 2, 0], [2, 0, 1], [0, 1, 2]]
-#         >>> find_trading_cycle(preferences)
-#         ['0', '1', '0']
-#         >>> preferences = [[0, 1], [1,0]]
-#         >>> find_trading_cycle(preferences)
-#         ['0', '1', '0']
-#
-#         >>> preferences = [[2,1,3], [2,1,3], [4,1,2]]
-#         >>> find_trading_cycle(preferences)
-#         """
-#
-#     G = nx.DiGraph()
-#     for i in range(len(preferences)):
-#         citizen = "citizen" + str(i)
-#         homeCitizen = "home" + str(i)
-#         G.add_node(citizen)
-#         G.add_node(homeCitizen)
-#         G.add_edge(citizen,homeCitizen,weight=preferences[i][i])
-#     max1 = -1
-#     index_of_max = 0
-#     for i in range(len(preferences)):
-#        #print(preferences[i].index(max(preferences[i])))
-#        for j in range(len(preferences[0])):
-#            if max1 < preferences[i][j]:
-#                max1 = preferences[i][j]
-#                index_of_max = j
-#        citizen = "citizen" + str(i)
-#        homeCitizen = "home" + str(index_of_max)
-#        max1 = -1
-#        G.add_edge(homeCitizen, citizen, weight=preferences[i][i])
-#
-#     c = nx.find_cycle(G)
-#     vec = []
-#     #print(c[0][1])
-#     #print(c[0][0])
-#     last_element_in_cycle = len(c)-2
-#     vec.append(c[0][0][-1])
-#     vec.append(c[last_element_in_cycle+1][0][-1])
-#     vec.append(c[0][1][-1])
-#
-#     return vec
 
 
 
@@ -199,7 +165,6 @@ def test_visualize_matchings():
 
 
 if __name__ == '__main__':
-    import doctest
 
     doctest.testmod()
 
