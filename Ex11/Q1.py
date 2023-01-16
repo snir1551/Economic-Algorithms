@@ -38,8 +38,7 @@ def find_trading_cycle(preferences: List[List[int]]):
     >>> find_trading_cycle(preferences)
     [1, 2, 1]
 
-    :param preferences:
-    :return:
+    
     """
     # Get the number of citizens
     n = len(preferences)
