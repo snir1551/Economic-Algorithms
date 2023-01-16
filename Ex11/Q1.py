@@ -3,25 +3,37 @@ from typing import List, Dict
 from collections import defaultdict
 import networkx as nx
 from typing import List
+from collections import deque
+import matplotlib.pyplot as plt
+import re
 
 def find_trading_cycle(preferences: List[List[int]]):
     """
+
+    Finds a trading cycle given a list of preferences.
+    A trading cycle is a sequence of citizens and homes such that each citizen is matched to their
+    most preferred home, and each home is matched to its most preferred citizen.
+
+    :param preferences: A list of lists, where each list represents the preferences of a citizen.
+                      The first element of each list is the most preferred home, the second is the
+                      second most preferred, and so on.
+    :return: A list representing the trading cycle, where the first element is the starting point
+             of the cycle, and the last element is the starting point.
+
+     Examples:
+
     >>> preferences = [[1, 2, 0], [2, 0, 1], [0, 1, 2]]
     >>> find_trading_cycle(preferences)
     [0, 1, 2, 0]
-
     >>> preferences = [[2, 1, 0], [2, 0, 1], [0, 1, 2]]
     >>> find_trading_cycle(preferences)
     [0, 2, 0]
-
     >>> preferences = [[0, 1, 2], [1, 0, 2], [2, 1, 0]]
     >>> find_trading_cycle(preferences)
     [0, 0]
-
     >>> preferences = [[2, 1, 0], [2, 1, 0], [2, 1, 0]]
     >>> find_trading_cycle(preferences)
     [2, 2]
-
     >>> preferences = [[1, 2, 0], [2, 1, 0], [1, 2, 0]]
     >>> find_trading_cycle(preferences)
     [1, 2, 1]
@@ -29,72 +41,111 @@ def find_trading_cycle(preferences: List[List[int]]):
     :param preferences:
     :return:
     """
+    # Get the number of citizens
     n = len(preferences)
+    # Create a set to keep track of matched citizens
+    matched_citizens = set()
+    # Create a deque to store the trading cycle
+    trading_cycle = deque()
+    # Start the algorithm with the first citizen
+    current_citizen = 0
 
-    vec = []
+    # Repeat until a citizen is matched to their own home
+    while current_citizen not in matched_citizens:
+        # Add the current citizen to the set of matched citizens
+        matched_citizens.add(current_citizen)
+        # Add the current citizen to the trading cycle
+        trading_cycle.append(current_citizen)
+        # Get the next citizen in the cycle
+        current_citizen = preferences[current_citizen][0]
 
-    for i in range(n):
-        if preferences[i][0] == i:
-            vec.append(i)
-            vec.append(i)
-            return vec
-
-    vec.append(0)
-    house = preferences[0][0]
-    vec.append(house)
-    setCycle = set()  # if i reached to cycle
-    saveIndex = dict()  # let me the index when the cycle started
-    saveIndex.update({0: 0})
-    saveIndex.update({house: 1})
-    setCycle.add(0)
-    setCycle.add(1)
-    ansCycle = []
-    for i in range(1,n):
-        vec.append(preferences[house][0])
-        house = preferences[house][0]
-        if setCycle.__contains__(house):
-            for i in range(saveIndex[house],len(vec)):
-                ansCycle.append(vec[i])
-        saveIndex.update({house: i})
-        setCycle.add(house)
-
-    return ansCycle
+    # Find the starting point of the cycle
+    cycle_start = trading_cycle.index(current_citizen)
+    # Convert the deque to a list and slice it to get the cycle
+    trading_cycle = list(trading_cycle)[cycle_start:]
+    # Add the starting point of the cycle to the result
+    trading_cycle.append(trading_cycle[0])
+    # Return the final trading cycle
+    return trading_cycle
 
 def trading_circles_algorithm(preferences: List[List[int]]):
     """
-    # >>> preferences = [[1, 2, 0], [2, 1, 0], [1, 2, 0]]
-    # >>> trading_circles_algorithm(preferences)
-    # ['citizen1 -> home2, citizen2 -> home1', 'citizen0 -> home0']
 
+    >>> preferences = [[1, 2, 0], [2, 1, 0], [1, 2, 0]]
+    >>> trading_circles_algorithm(preferences)
+    ['citizen1 -> home2, citizen2 -> home1', 'citizen0 -> home0']
     >>> preferences = [[2, 1, 0], [2, 1, 0], [2, 1, 0]]
     >>> trading_circles_algorithm(preferences)
     ['citizen2 -> home2', 'citizen1 -> home1', 'citizen0 -> home0']
-
     >>> preferences = [[0, 1, 2], [0, 2, 1], [0, 1, 2]]
     >>> trading_circles_algorithm(preferences)
     ['citizen0 -> home0', 'citizen1 -> home2, citizen2 -> home1']
 
+    >>> preferences = [[3, 7, 1, 5, 6, 4, 2, 0], [1, 0, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1, 0], [1, 2, 3, 4, 5, 6, 7, 0], [3, 2, 1, 0, 4, 5, 6, 7], [6, 5, 4, 3, 2, 1, 0, 7], [4, 3, 2, 1, 0, 5, 6, 7], [5, 4, 3, 2, 1, 0, 7, 6]]
+    >>> trading_circles_algorithm(preferences)
+    ['citizen1 -> home1', 'citizen3 -> home2, citizen2 -> home7, citizen7 -> home5, citizen5 -> home6, citizen6 -> home4, citizen4 -> home3', 'citizen0 -> home0']
 
-    :param preferences:
-    :return:
     """
+    # Create an empty list to store the final trading cycles
     ans_vec = []
-    while len(preferences[0]) > 0:
+    # Create a set to keep track of matched citizens
+    matched_citizens = set()
+    # Create a set to keep track of matched homes
+    matched_homes = set()
+    # While all citizens haven't been matched
+    while len(matched_citizens) < len(preferences):
+        # Find the next trading cycle
         vec = find_trading_cycle(preferences)
         ans = ""
-
-        for i in range(len(vec)-1):
-            #preferences.remove(preferences[vec[i]-i])
-            ans += "citizen" + str(vec[i]) + " -> home" + str(vec[i+1])
-            if i < len(vec)-2:
+        # Iterate through the trading cycle
+        for i in range(len(vec) - 1):
+            current_citizen = vec[i]
+            current_home = vec[i + 1]
+            # Construct the string for the current trading cycle
+            ans += "citizen{} -> home{}".format(current_citizen, current_home)
+            # Add the current citizen and home to the matched sets
+            matched_citizens.add(current_citizen)
+            matched_homes.add(current_home)
+            # Add a separator if it's not the last element
+            if i < len(vec) - 2:
                 ans += ", "
-        for i in range(len(preferences)):
-            for j in range(len(vec)-1):
-                preferences[i].remove(vec[j])
-
+        # Add the current trading cycle to the final list
         ans_vec.append(ans)
-
+        # Remove the matched citizens and homes from the preferences list
+        for i in range(len(preferences)):
+            for j in range(len(vec) - 1):
+                if vec[j] in matched_citizens and vec[j + 1] in matched_homes:
+                    preferences[i].remove(vec[j])
     return ans_vec
+
+
+def visualize_matchings(matchings: List[str]) -> None:
+    """
+
+    :param matchings:
+    :return:
+    """
+    citizens = []
+    homes = []
+    for match in matchings:
+        citizen_home = re.findall(r'\d+', match)
+        citizens = [citizen_home[i] for i in range(0, len(citizen_home), 2)]
+        homes = [citizen_home[i] for i in range(1, len(citizen_home), 2)]
+        plt.scatter(citizens, homes)
+
+    plt.xlabel("Citizens")
+    plt.ylabel("Homes")
+    plt.show()
+
+
+def test_visualize_matchings():
+    matchings = ['citizen1 -> home2, citizen2 -> home1', 'citizen0 -> home0']
+    visualize_matchings(matchings)
+    assert True
+    matchings = trading_circles_algorithm([[3, 7, 1, 5, 6, 4, 2, 0], [1, 0, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1, 0], [1, 2, 3, 4, 5, 6, 7, 0], [3, 2, 1, 0, 4, 5, 6, 7], [6, 5, 4, 3, 2, 1, 0, 7], [4, 3, 2, 1, 0, 5, 6, 7], [5, 4, 3, 2, 1, 0, 7, 6]])
+    visualize_matchings(matchings)
+    assert True
+
 
 
 # def find_trading_cycle(preferences: List[List[int]]):
@@ -153,9 +204,4 @@ if __name__ == '__main__':
 
     doctest.testmod()
 
-
-
-    # G = find_trading_cycle([[1, 2, 0], [2, 0, 1], [0, 1, 2]])
-    # c = nx.find_cycle(G)
-    # print(G.edges.data())
-    # print(c)
+    test_visualize_matchings()
