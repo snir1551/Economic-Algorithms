@@ -4,8 +4,8 @@
 
 <div style="text-align: left">
 
-## [למעבר לפתרון](https://github.com/snir1551/Economic-Algorithms/blob/master/Ex11/Q1.py)
+## * [למעבר לפתרון](https://github.com/snir1551/Economic-Algorithms/blob/master/Ex11/Q1.py) 
 
-## [למעבר לדוגמאות הרצה של הפתרון](https://github.com/snir1551/Economic-Algorithms/wiki/Example-of-running-the-code-of-Ex11-(Code-Q1.py):)
+## * [למעבר לדוגמאות הרצה של הפתרון](https://github.com/snir1551/Economic-Algorithms/wiki/Example-of-running-the-code-of-Ex11-(Code-Q1.py):) </h2>
 
 </div>
