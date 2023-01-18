@@ -1,1 +1,3 @@
 # Economic-Algorithms
+
+[סיכום חומר]()
